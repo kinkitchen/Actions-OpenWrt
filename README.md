@@ -58,11 +58,11 @@
 <summary><b>&nbsp;Redmi AX6插件及预览</b><br/></summary>
 <br/>
  编译插件：<br/>
-- 主题：Argon、Design<br/>
+- 主题：Design<br/>
 - 系统：文件管理器、定时重启、终端<br/>
-- 服务：AdGuard Home（不含二进制文件，可在界面下载）、应用过滤、HomeProxy、watchcat-plus、wechatpush 、OpenClash、Lucky、ddns、msd_lite、SmartDNS、网络唤醒、UHTTPd、UPnP IGD 和 PCP、Vlmcsd KMS 服务器<br/>
+- 服务：Frpc、OpenClash、msd_lite、SmartDNS、网络唤醒、UPnP IGD 和 PCP、Vlmcsd KMS 服务器<br/>
 - 管控：时间控制<br/>
-- VPN：N2N VPN<br/>
+- VPN：Zerotier<br/>
 - 网络：SQM 队列管理、多线多拨、MultiWAN 管理器 <br/>
 <img src="https://github.com/user-attachments/assets/5451cbc3-a334-4438-9a8a-3fda02efdfc8"/>
 </details>
