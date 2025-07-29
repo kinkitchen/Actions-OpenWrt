@@ -63,7 +63,7 @@
 - 服务：Frpc、OpenClash、msd_lite、SmartDNS、网络唤醒、UPnP IGD 和 PCP、Vlmcsd KMS 服务器<br/>
 - 管控：时间控制<br/>
 - VPN：Zerotier<br/>
-- 网络：SQM 队列管理、多线多拨、MultiWAN 管理器 <br/>
+- 网络：SQM 队列管理 <br/>
 <img src="https://github.com/user-attachments/assets/5451cbc3-a334-4438-9a8a-3fda02efdfc8"/>
 </details>
 
