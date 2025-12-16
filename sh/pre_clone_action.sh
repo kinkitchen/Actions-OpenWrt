@@ -1,25 +1,12 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2025 ZqinKing
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program. If not, see <https://www.gnu.org/licenses/>.
+# pre_clone_action.sh 修改版
+# 强制使用自定义 OpenWrt 源
 
 set -e
 
-BASE_PATH=$(cd $(dirname $0)/../ && pwd)
-
-Dev=$1
+BASE_PATH=$(cd $(dirname \$0)/../ && pwd)
+Dev=\$1
 
 CONFIG_FILE="$BASE_PATH/config/$Dev.config"
 INI_FILE="$BASE_PATH/compilecfg/$Dev.ini"
@@ -29,28 +16,31 @@ if [[ ! -f $CONFIG_FILE ]]; then
     exit 1
 fi
 
-if [[ ! -f $INI_FILE ]]; then
-    echo "INI file not found: $INI_FILE"
-    exit 1
-fi
+# 💡 这里不再依赖 INI_FILE，直接固定仓库和分支
+REPO_URL="https://github.com/qosmio/openwrt-ipq.git"
+REPO_BRANCH="24.10-nss"
 
-read_ini_by_key() {
-    local key=$1
-    awk -F"=" -v key="$key" '$1 == key {print $2}' "$INI_FILE"
-}
-
-REPO_URL=$(read_ini_by_key "REPO_URL")
-REPO_BRANCH=$(read_ini_by_key "REPO_BRANCH")
-REPO_BRANCH=${REPO_BRANCH:-main}
 BUILD_DIR="$BASE_PATH/action_build"
 
-echo $REPO_URL $REPO_BRANCH
+echo "使用仓库: $REPO_URL"
+echo "使用分支: $REPO_BRANCH"
 echo "$REPO_URL/$REPO_BRANCH" >"$BASE_PATH/repo_flag"
-git clone --depth 1 -b $REPO_BRANCH $REPO_URL $BUILD_DIR
+
+# clone 或更新
+if [ ! -d "$BUILD_DIR" ]; then
+    echo "首次 clone OpenWrt 源码..."
+    git clone --depth 1 -b $REPO_BRANCH $REPO_URL $BUILD_DIR
+else
+    echo "更新已有 OpenWrt 源码..."
+    cd $BUILD_DIR
+    git remote set-url origin $REPO_URL
+    git fetch origin
+    git checkout $REPO_BRANCH
+    git pull
+fi
 
 # GitHub Action 移除国内下载源
 PROJECT_MIRRORS_FILE="$BUILD_DIR/scripts/projectsmirrors.json"
-
 if [ -f "$PROJECT_MIRRORS_FILE" ]; then
     sed -i '/.cn\//d; /tencent/d; /aliyun/d' "$PROJECT_MIRRORS_FILE"
 fi
