@@ -63,9 +63,22 @@ jobs:
           echo "BUILD_DATE=$BUILD_DATE" >> $GITHUB_ENV
           export BUILD_SRC=$(awk -F"=" '/REPO_URL/ {print $NF}' "./compilecfg/${{ inputs.model || 'RedMi-AX6_plus_imm'}}.ini")
           echo "BUILD_SRC=$BUILD_SRC" >> $GITHUB_ENV
-
       - name: 克隆固件代码
-        run: ./sh/pre_clone_action.sh ${{ inputs.model || 'RedMi-AX6_plus_imm'}}
+        run: |
+          # 如果目录不存在就 clone
+          if [ ! -d "./openwrt" ]; then
+          git clone -b 24.10-nss https://github.com/qosmio/openwrt-ipq.git openwrt
+          else
+            cd openwrt
+            git remote set-url origin https://github.com/qosmio/openwrt-ipq.git
+            git fetch origin
+             git checkout 24.10-nss
+             git pull
+             cd ..
+           fi
+           
+           # 原来的脚本继续执行
+          ./sh/pre_clone_action.sh ${{ inputs.model || 'RedMi-AX6_plus_imm'}}
 
       - name: 缓存依赖
         uses: actions/cache@v4
